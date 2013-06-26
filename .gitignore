@@ -1,0 +1,7 @@
+*.swp
+*.swo
+node_modules
+.DS_Store
+.bundle
+.rbenv-version
+bin

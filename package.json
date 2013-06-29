@@ -19,7 +19,7 @@
     "coffee-script": ""
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "coffee app.coffee"
   },
   "subdomain": "vmux",
   "domains": [

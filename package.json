@@ -1,7 +1,7 @@
 {
   "name": "vmux",
   "description": "Video calls in your browser.",
-  "version": "0.0.1-3",
+  "version": "0.0.1-8",
   "author": "Mauro Pompilio <hackers.are.rockstars@gmail.com>",
   "private": true,
   "engines": {
@@ -14,9 +14,9 @@
     "ss-stylus": "0.1.x",
     "ss-hogan": "0.1.x",
     "ss-console": "0.1.x",
-    "everyauth": "",
-    "underscore": "",
-    "coffee-script": ""
+    "everyauth": "0.4.x",
+    "underscore": "1.5.x",
+    "coffee-script": "1.6.x"
   },
   "scripts": {
     "start": "coffee app.coffee"

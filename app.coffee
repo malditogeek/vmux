@@ -4,7 +4,6 @@ http      = require("http")
 ss        = require("socketstream")
 everyauth = require("everyauth")
 _         = require("underscore")
-
 port      = process.env.PORT or 5000
 
 environments =
@@ -64,14 +63,14 @@ server = http.Server(ss.http.middleware)
 server.listen port
 
 # Force polling (damn you Heroku!)
-ss.ws.transport.use 'engineio',
-  client: 
-    transports: ["polling"]
-    upgrade: false
-  server: 
-    transports: ["polling"]
-    allowUpgrades: false
-    pingInterval: 1000
+#ss.ws.transport.use 'engineio',
+#  client: 
+#    transports: ["polling"]
+#    upgrade: false
+#  server: 
+#    transports: ["polling"]
+#    allowUpgrades: false
+#    pingInterval: 1000
 
 # Start SocketStream
 ss.start server

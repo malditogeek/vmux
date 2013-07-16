@@ -2,7 +2,7 @@
 
 ## Plugin-free video calls in your browser using WebRTC
 
-There's a public instance of this app running at http://vmux.co
+There's a public instance of the app running at http://vmux.co. Hosting courtesy of [Nodejitsu Open Source initiative.](http://opensource.jit.su/)
 
 ## Browser support
 

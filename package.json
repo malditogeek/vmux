@@ -1,7 +1,7 @@
 {
   "name": "vmux",
   "description": "Video calls in your browser.",
-  "version": "0.0.1-8",
+  "version": "0.0.1-9",
   "author": "Mauro Pompilio <hackers.are.rockstars@gmail.com>",
   "private": true,
   "engines": {

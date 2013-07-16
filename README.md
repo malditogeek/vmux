@@ -24,3 +24,15 @@ If you already have a working Node/NPM environment, should be as easy as:
     npm start
 
 Point your browser to [localhost:5000](http://localhost:5000/)
+
+## Deployment
+
+If you're going to run VMUX in production, make sure you create your own Twitter app for authentication and it's [configured properly](http://i.imgur.com/jlIuRQl.png). You'll also need to adjust the redirectHost in app.coffee.
+
+## Author
+
+[Mauro Pompilio](https://twitter.com/malditogeek)
+
+## License
+
+VMUX is release under the BSD license.

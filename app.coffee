@@ -42,6 +42,8 @@ ss.client.templateEngine.use require("ss-hogan")
 # Minimize and pack assets if you type: SS_ENV=production node app.js
 ss.client.packAssets()  if ss.env is "production"
 
+## Twitter Auth
+
 twitterCallback = (session, accessToken, accessTokenSecret, twitterUserMetadata) ->
   session.userId  = twitterUserMetadata.screen_name
   session.avatar  = twitterUserMetadata.profile_image_url_https
@@ -49,11 +51,20 @@ twitterCallback = (session, accessToken, accessTokenSecret, twitterUserMetadata)
   session.save()
   true
 
+twitterErrback = (req, res) ->
+  res.writeHead(302, 'Location': '/')
+  res.end()
+
+# The key/secret pair provided are for dev only, replace with your own app in productcion.
+tw_key    = process.env.TW_KEY    || 'k264s29HzzLOLkbjSxwgKQ'
+tw_secret = process.env.TW_SECRET || 'IpeJIGL2Srjk1nSGu3krbNcIXnV1F88jYP8O4het9k'
+
 everyauth.twitter
-  .consumerKey(process.env.TW_KEY)
-  .consumerSecret(process.env.TW_SECRET)
+  .consumerKey(tw_key)
+  .consumerSecret(tw_secret)
+  .handleAuthCallbackError(twitterErrback)
   .findOrCreateUser(twitterCallback)
-  .redirectPath env.redirectHost + '/welcome'
+  .redirectPath(env.redirectHost + '/welcome')
 
 ss.http.middleware.prepend ss.http.connect.bodyParser()
 ss.http.middleware.append everyauth.middleware()

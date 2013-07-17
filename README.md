@@ -38,6 +38,10 @@ For more info about WebRTC browser support go to [WebRTC.org](http://webrtc.org/
 
 If you're going to run VMUX in production, make sure you create your own Twitter app for authentication and it's [configured properly](http://i.imgur.com/jlIuRQl.png). You'll also need to adjust the redirectHost in app.coffee.
 
+## Contact
+
+Twitter: [@vmuxapp](https://twitter.com/vmuxapp)
+IRC: [#vmux](http://webchat.freenode.net/?channels=vmux) on Freenode
 
 ## Author
 

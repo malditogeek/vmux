@@ -22,7 +22,7 @@ For more info about WebRTC browser support go to [WebRTC.org](http://webrtc.org/
 
 ## Getting started
 
-Prerequisites: Redis
+Prerequisite: Redis
 
 If you already have a working Node/NPM environment, should be as easy as:
 

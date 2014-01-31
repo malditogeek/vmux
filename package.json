@@ -16,7 +16,10 @@
     "ss-console": "0.1.x",
     "everyauth": "0.4.x",
     "underscore": "1.5.x",
-    "coffee-script": "1.6.x"
+    "coffee-script": "1.6.x",
+    "redis": "~0.10.0",
+    "ntwitter": "~0.5.0",
+    "uuid": "~1.4.1"
   },
   "scripts": {
     "start": "coffee app.coffee"

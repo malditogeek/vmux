@@ -1,0 +1,11 @@
+#modal.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type="button", "data-dismiss"="modal","aria-hidden"="true")&times;
+        h4 Join a room
+      .modal-body
+        p 
+          input#room.form-control(type='text', placeholder='Room name', autofocus='true')
+        p
+          button#join.btn.btn-success Join

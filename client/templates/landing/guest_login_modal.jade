@@ -1,0 +1,11 @@
+#modal.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type="button", "data-dismiss"="modal","aria-hidden"="true")&times;
+        h4 What's your name?
+      .modal-body
+        p 
+          input#username.form-control(type='text', placeholder='A username without spaces', autofocus='true')
+        p
+          button#login.btn.btn-success(type='submit') Login

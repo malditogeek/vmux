@@ -13,4 +13,4 @@ ss.server.on 'ready', ->
   jQuery ->
     
     # Load app
-    ss.app      = require('/app')
+    ss.app = require('/app')

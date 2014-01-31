@@ -1,67 +1,79 @@
-_ = require('underscore')
+_     = require('underscore')
+Redis = require('redis')
 
-U = {}
+redis = Redis.createClient()
 
-findUser = (session) ->
-  if !U[session.userId]
-    user = 
-      id:     session.userId
-      nick:   session.userId
-      name:   session.name
-      avatar: session.avatar
-      state:  'connecting'
+findUser = (id, cb) ->
+  redis.get "user:#{id}", (err, user_json) ->
+    cb JSON.parse(user_json)
 
-    U[session.userId] = user
-
-  return U[session.userId]
+lookupProfile = (nick, cb) ->
+  redis.get "lookup:#{nick}", (err, uuid) ->
+    cb(uuid);
 
 exports.actions = (req, res, ss) ->
-
   req.use('session')
   req.use('user.authenticated')
 
-  welcome: ->
-    user = findUser(req.session)
-    res(true, user)
+  home: ->
+    findUser req.session.userId, (user) ->
 
-  connected: (profile) ->
-    user = findUser(req.session)
+      if not req.session.subscribed
+        redis.smembers "friends:#{req.session.userId}", (err, user_ids) =>
+            req.session.channel.subscribe(id) for id in user_ids
+            req.session.subscribed = true
+            req.session.save()
 
-    user  = U[req.session.userId]
-    owner = U[profile]
+      ss.publish.channel user.id, 'user:online', user
 
-    req.session.channel.subscribe(profile)
+      res(true, user)
 
-    if user.id.toLowerCase() == profile.toLowerCase()
-      ss.publish.channel profile, 'owner.connected', user
-      ss.publish.channel profile, 'owner.state', 'connecting'
+  profile: (profile) ->
+    lookupProfile profile.toLowerCase(), (uuid) ->
+      if not uuid
+        res(false)
+        return
 
-    res(true, user, owner)
+      findUser uuid, (profile_user) ->
+        req.session.channel.subscribe(profile_user.id)
+        findUser req.session.userId, (current_user) ->
+          res(true, current_user, profile_user)
 
-  disconnected: (profile) ->
-    id = req.session.userId
-    U[id].state = 'offline'
-      
-    if id.toLowerCase() == profile.toLowerCase()
-      ss.publish.channel(profile, 'owner.state', 'offline')
+  room: (room_name) ->
+    findUser req.session.userId, (user) ->
+      req.session.channel.subscribe room_name
+      res(user)
 
-  state: (state, profile) ->
-    id = req.session.userId
-    U[id].state = state
-    if req.session.userId.toLowerCase() == profile.toLowerCase()
-      ss.publish.channel(profile, 'owner.state', state)
-    else
-      ss.publish.channel(profile, 'user.state', state)
+  # State propagation
 
-  request_call: (callee) ->
+  state: (state) ->
+    findUser req.session.userId, (user) ->
+      ss.publish.channel user.id, "user:#{state}", user
+
+  # WebRTC signaling
+
+  signal: (callee, message) ->
     caller = req.session.userId
-    ss.publish.user callee, 'call.requested', caller
+    findUser req.session.userId, (user) ->
+      ss.publish.user callee, 'signal', caller, message, user
 
-  reject_call: (callee) ->
-    ss.publish.user callee, 'call.rejected'
+  # Call handling
 
-  signaling: (callee, message) ->
-    caller = req.session.userId
-    console.log "#{caller} -> #{callee} - #{message.type}"
-    ss.publish.user callee, 'signaling', caller, message
+  request_call: (callee_id) ->
+    findUser req.session.userId, (caller) ->
+      ss.publish.user callee_id, 'call.request', caller
 
+  reject_call: (callee_id) ->
+    ss.publish.user callee_id, 'call.rejected'
+
+  # Presence
+
+  pingback: (uuid) ->
+    findUser req.session.userId, (user) ->
+      ss.publish.user uuid, 'user:pingback', user
+
+  # Groups
+
+  ready: (id) ->
+    findUser req.session.userId, (user) ->
+      ss.publish.channel id, 'group.ready', user

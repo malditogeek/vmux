@@ -5,6 +5,7 @@ node_modules
 .bundle
 .rbenv-version
 bin
+db
 
 # Ignore production GA
 client/code/libs/8.ga.js

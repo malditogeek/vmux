@@ -2,11 +2,15 @@
 
 ## Plugin-free video calls in your browser using WebRTC
 
-There's a public instance of the app running at http://vmux.co. Hosting courtesy of [Nodejitsu Open Source initiative.](http://opensource.jit.su/)
+VMUX is a Skype™ alternative that runs in the browser. It's built on top of WebRTC so you don't need to install any plugins or use Flash. You can do one-to-one or multi-party video calls and all the communications are P2P and encrypted.
+
+You can try it at [https://vmux.co](https://vmux.co)
+
+Have any questions? Join the conversation at [![Gitter](https://badges.gitter.im/malditogeek/vmux.png)](https://gitter.im/malditogeek/vmux)
 
 ## Browser support
 
-VMUX supports the lastest stable versions of Chrome and Firefox.
+VMUX supports the lastest stable versions of Chrome, ~~Firefox~~ and Opera.
 
 For more info about WebRTC browser support go to [WebRTC.org](http://webrtc.org/).
 
@@ -18,6 +22,8 @@ For more info about WebRTC browser support go to [WebRTC.org](http://webrtc.org/
 
 ## Getting started
 
+Prerequisites: Redis
+
 If you already have a working Node/NPM environment, should be as easy as:
 
     npm install
@@ -27,7 +33,7 @@ Point your browser to [localhost:5000](http://localhost:5000/)
 
 ## Deployment
 
-If you're going to run VMUX in production, make sure you create your own Twitter app for authentication and it's [configured properly](http://i.imgur.com/jlIuRQl.png). You'll also need to adjust the redirectHost in app.coffee.
+If you're going to run VMUX in production, make sure you create your own Twitter app for authentication and it's [configured properly](http://i.imgur.com/jlIuRQl.png).
 
 ## Author
 

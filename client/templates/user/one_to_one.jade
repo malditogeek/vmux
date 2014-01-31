@@ -1,0 +1,16 @@
+#options
+  .btn-group
+    button#toggle-fullscreen.btn.btn-default("data-toggle"="button")
+      i.fa.fa-arrows-alt
+    button#toggle-audio.btn.btn-default("data-toggle"="button")
+      i.fa.fa-microphone-slash
+    button#toggle-video.btn.btn-default("data-toggle"="button")
+      i.fa.fa-eye-slash
+  button#hangup.btn.btn-danger Hangup
+
+#chat
+  #chat-messages
+  #chat-input
+
+video#remote(autoplay)
+video#local(autoplay, muted)

@@ -1,27 +1,16 @@
-video#localVideo(autoplay, muted)
-video#remoteVideo(autoplay)
-video#miniVideo(autoplay, muted)
+#bgvideo
+  video#loopback(autoplay, muted)
 
-#spinner
-  img(src='/spinner.gif')
+#wrapper
+  #background
+  #container
+    #sidebar
+    #singleuser
+      p
+        img.img-circle(src="{{avatar}}")
+      p
+        small {{name}}
+      p
+        button.call.btn.btn-info Call
 
-#profile
-  .row-fluid
-    .span12
-      #user
-      #intercom
-      #roster
-
-#hangup
-  a#call.btn.btn-danger Hangup
-
-#logo
-  a(href='https://github.com/malditogeek/vmux', target='_blank')
-    img(src='/logo_white_200.png')
-
-#github
-  a(href='https://github.com/malditogeek/vmux', target='_blank') 
-    small VMUX is open-source, fork it on GitHub.
-  a(href='http://opensource.jit.su/', target='_blank') 
-    small Hosting courtesy of Nodejitsu.
-
+  #conversation

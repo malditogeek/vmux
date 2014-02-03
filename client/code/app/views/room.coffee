@@ -15,10 +15,12 @@ class StreamCollection extends Backbone.Collection
   model: Stream
 
 class StreamView extends Backbone.View
+  className: 'stream-view'
 
   render: ->
     css_classes = if @model.get('local') then 'local' else ''
-    @$el.html(ss.tmpl['user-video'].render({css_classes: css_classes}))
+    screen_name = if @model.get('pc') then @model.get('pc').screen_name else ''
+    @$el.html(ss.tmpl['user-video'].render({css_classes: css_classes, screen_name: screen_name}))
 
     if @model.get('local')
       adapter.attachMediaStream @$el.find('.video')[0], localStream
@@ -70,17 +72,15 @@ class Room extends Backbone.View
     views = {}
     @collection.bind 'add', (stream) =>
       views[stream.get('peer')] = new StreamView(model: stream)
-      @$el.find('#streams').append views[stream.get('peer')].render().el
+      @$el.find('#streams').append(views[stream.get('peer')].render().el)
 
       if not stream.get('local')
-        pc = stream.get('pc')
 
-        # FIXME THIS EVENTS ARE NOT WORKING
-        # DISCONNECT WHEN NAVIGATE AWAY OF IT
+        pc = stream.get('pc')
+  
         pc.on 'close', =>
           @collection.remove(stream)
-        pc.on 'remoteStreamRemoved', =>
-          @collection.remove(stream)
+
         pc.on 'message', (msg) =>
           message = new Message(stream.get('pc').user.screen_name, msg)
           messages.add(message)
@@ -89,17 +89,14 @@ class Room extends Backbone.View
     @collection.bind 'remove', (stream) =>
       views[stream.get('peer')].remove()
 
-
-    streams = @collection
-
     window.beforeunload.push =>
-      streams.forEach (stream) ->
+      @collection.forEach (stream) ->
         stream.get('pc').hangup() if not stream.get('local')
 
     media = new Media
     media.on 'success', (stream) =>
       stream = new Stream(@model.get('uuid'), null, local: true)
-      streams.add(stream)
+      @collection.add(stream)
 
 
       ss.event.on 'group.ready', (user_data) =>
@@ -113,23 +110,27 @@ class Room extends Backbone.View
         pc.initiate()
 
         stream = new Stream(peer, pc)
-        streams.add(stream)
+        @collection.add(stream)
 
       ss.event.on 'signal', (peer, msg, user) =>
-        if streams.get(peer)
-          pc = streams.get(peer).get('pc')
+        if @collection.get(peer)
+          pc = @collection.get(peer).get('pc')
 
         switch msg.type
           when 'offer'
             new_pc = new PC(peer, true, user)
+            new_pc.screen_name = user.screen_name
             new_pc.attachLocalStream(localStream)
             new_pc.processOffer(msg)
             stream = new Stream(peer, new_pc)
-            streams.add(stream)
+            @collection.add(stream)
+
           when 'answer'
             pc.processAnswer(msg)
+
           when 'candidate'
             pc.addCandidate(msg)
+
           when 'bye'
             pc.close()
 

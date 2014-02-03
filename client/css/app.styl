@@ -60,18 +60,34 @@ a:hover
 
 #room
   height: 100%
-  #roster
-    width: 60%
-    float: right
-    height: 100%
 
-    video
-      width: 50%
-      float: left
+  #streams
+    position: relative
+    z-index: 0
+    float: right
+    width: 60%
+    height: 100%
 
     .local
       -webkit-transform: rotateY(-180deg)
       transform: rotateY(-180deg)
+
+    .stream-view
+      width: 50%
+      float: left
+
+      video
+        width: 100%
+
+      .screen_name
+        position: absolute
+        font-size: 16px
+        margin: -35px 0px 0px 5px
+        padding: 0px 10px
+        background: #111
+        opacity: 0.8
+        border-radius: 15px
+
 
   #chat
     position: relative
@@ -79,46 +95,27 @@ a:hover
     float: left
     height: 100%
 
-  #chat-messages
-    position: relative
-    padding: 30px 50px 60px 100px
-    height: 100%
-    width: 100%
-    overflow: scroll
-    font-size: 18px
-    ul
-      padding: 0px
-      list-style: none
+    #chat-messages
+      position: relative
+      padding: 30px 50px 60px 100px
+      height: 100%
+      width: 100%
+      overflow: scroll
+      font-size: 18px
+      ul
+        padding: 0px
+        list-style: none
 
-    .chat-message
-      .username
-        text-transform: uppercase
-        color: #2a6496
+      .chat-message
+        .username
+          text-transform: uppercase
+          color: #2a6496
 
-
-
-  #chat-input
-    position: absolute
-    bottom: 10px
-    left: 100px
-    padding: 0px 10px 0px 0px
-
-#streams
-  float: left
-  position: relative
-  width: 100%
-
-  .remoteVideo
-    display: none
-    position: relative
-    width: 100%
-    text-align: center
-  
-  .hangup
-    display: none
-    position: absolute
-    top: 30px
-    right: 30px
+    #chat-input
+      position: absolute
+      bottom: 10px
+      left: 100px
+      padding: 0px 10px 0px 0px
 
 #home, #profile
   position: relative
@@ -146,10 +143,9 @@ a:hover
     transform: rotateY(-180deg)
     filter: blur(10px)
 
-
 #wrapper
   position: absolute
-  z-index: 2
+  z-index: 20
   width: 100%
   height: 100%
   top: 0

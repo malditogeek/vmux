@@ -78,12 +78,11 @@ ss.http.route "/auth/guest", (req, res) ->
   req.session.userId = uuid
   req.session.save()
 
-  user = {id: uuid, uuid: uuid, screen_name: screen_name}
-  redis.set "user:#{uuid}", JSON.stringify(user)
-  redis.set "lookup:#{uuid}", uuid
+  user = {id: uuid, uuid: uuid, screen_name: screen_name, guest: true}
 
-  redis.expire "user:#{uuid}", 60 * 60 * 24
-  redis.expire "lookup:#{uuid}", 60 * 60 * 24
+  expiry = 60 * 60 * 24
+  redis.setex "user:#{uuid}",   expiry, JSON.stringify(user)
+  redis.setex "lookup:#{uuid}", expiry, uuid
 
   res.writeHead(302, 'Location': '/home')
   res.end()

@@ -54,7 +54,7 @@ class Home extends Backbone.View
   initialize: ->
 
   render: ->
-    @$el.html(ss.tmpl['layout-home'].render(@model.toJSON()))
+    @$el.html(ss.tmpl['layout-home'].render({user: @model.toJSON()}))
 
     sidebar = new Sidebar(model: @model)
     @$el.find('#sidebar').html(sidebar.render().el)
@@ -64,11 +64,15 @@ class Home extends Backbone.View
     @$el.find('#roster').html(roster.render().el)
 
     ss.event.on 'user:online', (user_data) =>
+      @$el.find('#placeholder').fadeOut(200)
+
       user = new User(user_data)
       online_users.add(user)
       ss.rpc('vmux.pingback', user.get('uuid'))
 
     ss.event.on 'user:pingback', (user) =>
+      @$el.find('#placeholder').fadeOut(200)
+
       online_users.add(new User(user))
 
     ss.event.on 'user:offline', (user) =>

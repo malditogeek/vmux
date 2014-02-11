@@ -6,7 +6,19 @@
   #container
     #sidebar
     #greeting
-      p Hello {{name}}!
+      p Hello {{user.name}}!
     #roster
-      p Fetching users...
+    #placeholder
+      {{#user.guest}}
+      p To receive a call, send this link:
+      p
+        a(href="https://vmux.co/{{user.uuid}}") https://vmux.co/{{user.uuid}}
+      {{/user.guest}}
+
+      {{^user.guest}}
+      p 
+        i.fa.fa-spinner.fa-spin
+      p
+        |  Waiting for friends...
+      {{/user.guest}}
   #conversation

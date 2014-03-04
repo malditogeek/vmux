@@ -10,7 +10,7 @@ Have any questions? Join the conversation at [![Gitter](https://badges.gitter.im
 
 ## Browser support
 
-VMUX supports the lastest stable versions of Chrome, ~~Firefox~~ and Opera.
+VMUX supports the lastest stable versions of Chrome, Firefox and Opera.
 
 For more info about WebRTC browser support go to [WebRTC.org](http://webrtc.org/).
 

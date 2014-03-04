@@ -55,7 +55,6 @@ class OneToOne extends Backbone.View
 
   hangup: -> 
     @pc.hangup()
-    @remove()
 
   scrollChat: ->
     @$el.find('#chat-messages').scrollTop(10000);
@@ -63,7 +62,8 @@ class OneToOne extends Backbone.View
   render: ->
     @$el.html(ss.tmpl['user-one_to_one'].render())
 
-    adapter.attachMediaStream @$el.find('#local')[0], localStream
+    adapter.reattachMediaStream @$el.find('#local')[0], $('#loopback')[0]
+    setTimeout (-> $('#loopback')[0].src = ''), 500
     draggable(@$el.find('#local')[0])
 
     input = new MessageInput(pc: @pc)
@@ -89,10 +89,15 @@ class OneToOne extends Backbone.View
       adapter.attachMediaStream remoteVideo[0], stream
 
     @pc.on 'remoteStreamRemoved', =>
-      @remove()
+      adapter.reattachMediaStream $('#loopback')[0], @$el.find('#local')[0]
+      setTimeout (=> @remove()), 500
 
     @pc.on 'close', =>
-      @remove()
+      adapter.reattachMediaStream $('#loopback')[0], @$el.find('#local')[0]
+      setTimeout (=> @remove()), 500
+
+    window.beforeunload.push =>
+      @pc.hangup()
 
     return this
 

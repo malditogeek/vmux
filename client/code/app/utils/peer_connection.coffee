@@ -7,7 +7,7 @@ class PC
     @log "Creating PeerConnection."
 
     constraints = 
-      optional: [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true}]
+      optional: [{'DtlsSrtpKeyAgreement': true}]
 
     stun_server = 
       url: 'stun:88.198.32.137:3479'
@@ -53,9 +53,10 @@ class PC
       @log 'DataChannel connection closed'
       @trigger 'datachannelclose', @
 
-    channel.onmessage = =>
+    channel.onmessage = (event) =>
       @log "Message: #{event.data}"
-      @trigger 'message', event.data
+      if event.data.match /\w|\d/
+        @trigger 'message', event.data
 
   sendMessage: (msg) =>
     @datachannel.send msg

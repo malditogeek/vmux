@@ -23,6 +23,9 @@ class StreamView extends Backbone.View
     @$el.html(ss.tmpl['user-video'].render({css_classes: css_classes, screen_name: screen_name}))
 
     if @model.get('local')
+      console.debug 'local'
+      console.debug localStream
+      window.localvid = @$el.find('.video')[0]
       adapter.attachMediaStream @$el.find('.video')[0], localStream
       @$el.find('.video').attr('muted','muted')
     else

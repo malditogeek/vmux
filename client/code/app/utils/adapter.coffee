@@ -51,11 +51,11 @@ if navigator.mozGetUserMedia
   # Attach a media stream to an element.
   attachMediaStream = (element, stream) ->
     element.mozSrcObject = stream
-    element.play()
+    setTimeout (-> element.play()), 250
 
   reattachMediaStream = (to, from) ->
     to.mozSrcObject = from.mozSrcObject
-    to.play()
+    setTimeout (-> from.src = ''; to.play()), 500
 
   
   # Fake get{Video,Audio}Tracks

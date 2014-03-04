@@ -45,6 +45,7 @@ twitterCallback = (session, accessToken, accessTokenSecret, meta) ->
   meta.uuid = UUID.v4()
 
   session.userId = meta.uuid
+  session.subscribed = false
   session.save()
 
   redis.set "user:#{meta.uuid}", JSON.stringify(meta)
@@ -76,6 +77,7 @@ ss.http.route "/auth/guest", (req, res) ->
   screen_name = if query then query[1] else 'Guest'
 
   req.session.userId = uuid
+  req.session.subscribed = false
   req.session.save()
 
   user = {id: uuid, uuid: uuid, screen_name: screen_name, guest: true}

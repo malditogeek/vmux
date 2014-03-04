@@ -129,7 +129,10 @@ class Home extends Backbone.View
     stream = new Stream(peer, pc)
     one_to_one = new OneToOne(model: stream, localUser: @model)
     @$el.find('#conversation').html(one_to_one.render().el)
-    @$el.find('#conversation').fadeIn()
+
+    @$el.find('#container').fadeOut 200, =>
+      @$el.find('#bgvideo').fadeOut(200)
+      @$el.find('#conversation').fadeIn(200)
 
   peercon: (uuid, opts) ->
     return @pc if @pc
@@ -138,8 +141,8 @@ class Home extends Backbone.View
     @pc.attachLocalStream(localStream)
 
     @pc.on 'open', =>
-      @$el.find('#container').fadeOut()
-      @$el.find('#bgvideo').fadeOut()
+      #@$el.find('#container').fadeOut()
+      #@$el.find('#bgvideo').fadeOut()
 
     @pc.on 'close', =>
       @$el.find('#container').fadeIn()

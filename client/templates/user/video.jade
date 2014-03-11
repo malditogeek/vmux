@@ -1,2 +1,14 @@
-video(autoplay, class="video {{css_classes}}")
+{{#local}}
+video.local(autoplay, muted)
+{{/local}}
+
+{{^local}}
+video(autoplay)
 .screen_name {{screen_name}}
+{{/local}}
+
+{{#local}}
+#controls
+  i#toggle-audio.fa.fa-microphone.tip(data-toggle="tooltip", data-placement="top", title="Microphone is ON")
+  i#toggle-video.fa.fa-video-camera.tip(data-toggle="tooltip", data-placement="top", title="Camera is ON")
+{{/local}}

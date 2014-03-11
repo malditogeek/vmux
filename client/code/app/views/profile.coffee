@@ -16,7 +16,7 @@ class Profile extends Backbone.View
 
   call: ->
     ss.rpc 'vmux.request_call', @options.profile_user.get('uuid')
-    @$el.find('.call').text('Connecting...')
+    @$el.find('.call').text('Calling...')
     @$el.find('.call').attr('disabled','disabled')
 
   render: ->

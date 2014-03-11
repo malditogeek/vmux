@@ -34,7 +34,7 @@ class UserView extends Backbone.View
 
   call: ->
     ss.rpc 'vmux.request_call', @model.get('uuid')
-    @$el.find('.call').text('Connecting...')
+    @$el.find('.call').text('Calling...')
     @$el.find('.call').attr('disabled','disabled')
 
   render: ->
@@ -50,8 +50,6 @@ class UserView extends Backbone.View
 
 class Home extends Backbone.View
   id: 'home'
-
-  initialize: ->
 
   render: ->
     @$el.html(ss.tmpl['layout-home'].render({user: @model.toJSON()}))

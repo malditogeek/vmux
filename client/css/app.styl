@@ -78,6 +78,7 @@ a:hover
 
       video
         width: 100%
+        z-index: 1
 
       .screen_name
         position: absolute
@@ -85,9 +86,36 @@ a:hover
         margin: -35px 0px 0px 5px
         padding: 0px 10px
         background: #111
-        opacity: 0.8
+        opacity: 0.7
         border-radius: 15px
 
+      #controls
+        z-index: 2
+        position: absolute
+        font-size: 20px
+        margin: -50px 0px 0px 10px
+        opacity: 0.3
+
+        padding: 4px 8px
+        background: #333
+        opacity: 0.3
+        border-radius: 50px
+
+        i
+          cursor: pointer
+          color: lightgreen
+          padding: 0px 10px
+
+        .muted
+          color: lightcoral
+
+      #controls:hover
+        opacity: 1
+
+
+  input[type='text']
+    background: transparent
+    color: white
 
   #chat
     position: relative
@@ -174,7 +202,7 @@ a:hover
   padding: 0px 100px
 
   #greeting
-    padding: 10px
+    padding: 20px
     font-size: 50px
     line-height: 70px
     font-style: italic
@@ -247,17 +275,41 @@ a:hover
     bottom: 30px
     right: 30px
     width: 200px
-    box-shadow: 0px 0px 15px 5px #111
+    border: 1px solid #333
+    border-radius: 2px
     -webkit-transform: rotateY(-180deg)
     transform: rotateY(-180deg)
 
-  #options
+  #controls
     z-index: 3
     position: absolute
+    font-size: 22px
     top: 30px
     right: 30px
+
+    padding: 7px 15px
+    background: #333
+    opacity: 0.3
+    border-radius: 50px
+
     #hangup
-      margin-left: 10px
+      color: lightcoral
+      margin-left: 15px 
+
+    i
+      cursor: pointer
+      color: lightgreen
+      padding: 0px 10px
+
+    #toggle-fullscreen
+      color: lightblue
+
+    .muted
+      color: lightcoral
+
+  #controls:hover
+    opacity: 1
+
 
   #chat-messages
     z-index: 3
@@ -298,6 +350,16 @@ a:hover
     bottom: 15px
     left: 30px
     opacity: 0.8
+
+    input[type='text']
+      background: transparent
+      color: #111
+
+    ::-webkit-input-placeholder
+      color: #111
+
+    ::-moz-placeholder
+      color: #111
 
 .clear
   clear: both

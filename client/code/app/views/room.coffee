@@ -17,22 +17,42 @@ class StreamCollection extends Backbone.Collection
 class StreamView extends Backbone.View
   className: 'stream-view'
 
+  events:
+    'click #toggle-audio': 'toggleAudio'
+    'click #toggle-video': 'toggleVideo'
+
+  toggleAudio: ->
+    el = @$el.find('#toggle-audio')
+    el.toggleClass('muted fa-microphone-slash fa-microphone')
+    state = if el.hasClass('muted') then 'OFF' else 'ON'
+    el.attr('data-original-title', "Microphone is #{state}")
+    @collection.forEach (stream) ->
+      stream.toggleAudio()
+
+  toggleVideo: ->
+    el = @$el.find('#toggle-video')
+    el.toggleClass('muted fa-video-camera fa-eye-slash')
+    state = if el.hasClass('muted') then 'OFF' else 'ON'
+    el.attr('data-original-title', "Camera is #{state}")
+    @collection.forEach (stream) ->
+      stream.toggleVideo() if stream
+
   render: ->
-    css_classes = if @model.get('local') then 'local' else ''
     screen_name = if @model.get('pc') then @model.get('pc').screen_name else ''
-    @$el.html(ss.tmpl['user-video'].render({css_classes: css_classes, screen_name: screen_name}))
+    @$el.html(ss.tmpl['user-video'].render({
+      screen_name: screen_name,
+      local: if @model.get('local') then true else false
+    }))
+
+    @$el.find('.tip').tooltip()
 
     if @model.get('local')
-      console.debug 'local'
-      console.debug localStream
-      window.localvid = @$el.find('.video')[0]
-      adapter.attachMediaStream @$el.find('.video')[0], localStream
-      @$el.find('.video').attr('muted','muted')
+      adapter.attachMediaStream @$el.find('video')[0], localStream
     else
       pc = @model.get('pc')
 
       pc.on 'remoteStreamAdded', (stream) =>
-        adapter.attachMediaStream @$el.find('.video')[0], stream
+        adapter.attachMediaStream @$el.find('video')[0], stream
 
       pc.on 'remoteStreamRemoved', =>
         @remove()
@@ -54,6 +74,7 @@ class Room extends Backbone.View
   render: ->
     @$el.html(ss.tmpl['layout-group'].render())
 
+
     sidebar = new Sidebar(model: @model)
     @$el.find('#sidebar').html(sidebar.render().el)
 
@@ -74,7 +95,7 @@ class Room extends Backbone.View
 
     views = {}
     @collection.bind 'add', (stream) =>
-      views[stream.get('peer')] = new StreamView(model: stream)
+      views[stream.get('peer')] = new StreamView(model: stream, collection: @collection)
       @$el.find('#streams').append(views[stream.get('peer')].render().el)
 
       if not stream.get('local')

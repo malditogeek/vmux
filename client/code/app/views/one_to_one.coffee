@@ -32,26 +32,18 @@ class OneToOne extends Backbone.View
     document.documentElement.webkitExitFullscreen()
 
   toggleAudio: ->
-    if @audio then @muteAudio() else @unmuteAudio()
+    el = @$el.find('#toggle-audio')
+    el.toggleClass('muted fa-microphone-slash fa-microphone')
+    state = if el.hasClass('muted') then 'OFF' else 'ON'
+    el.attr('data-original-title', "Microphone is #{state}")
+    @model.toggleAudio()
 
   toggleVideo: ->
-    if @video then @muteVideo() else @unmuteVideo()
-
-  muteVideo: ->
-    @video = false
-    @pc.muteVideo()
-
-  unmuteVideo: ->
-    @video = true
-    @pc.unmuteVideo() 
-
-  muteAudio: ->
-    @audio = false
-    @pc.muteAudio()
-
-  unmuteAudio: ->
-    @audio = true
-    @pc.unmuteAudio()
+    el = @$el.find('#toggle-video')
+    el.toggleClass('muted fa-video-camera fa-eye-slash')
+    state = if el.hasClass('muted') then 'OFF' else 'ON'
+    el.attr('data-original-title', "Camera is #{state}")
+    @model.toggleVideo()
 
   hangup: -> 
     @pc.hangup()
@@ -61,6 +53,8 @@ class OneToOne extends Backbone.View
 
   render: ->
     @$el.html(ss.tmpl['user-one_to_one'].render())
+
+    @$el.find('.tip').tooltip()
 
     adapter.reattachMediaStream @$el.find('#local')[0], $('#loopback')[0]
     setTimeout (-> $('#loopback')[0].src = ''), 500

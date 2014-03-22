@@ -6,6 +6,7 @@ everyauth = require('everyauth')
 UUID      = require('uuid')
 Twitter   = require('ntwitter')
 Redis     = require('redis')
+crypto    = require('crypto')
 
 env       = require('./environments')[ss.env]
 redis = Redis.createClient(env.redis.port, env.redis.host)
@@ -24,10 +25,6 @@ ss.client.define "vmux",
   code: ["libs", "app"]
   tmpl: "*"
 
-# Serve this client on the root URL
-ss.http.route "/", (req, res) ->
-  res.serveClient 'vmux'
-
 # Code Formatters
 ss.client.formatters.add require("ss-coffee")
 ss.client.formatters.add require("ss-jade")
@@ -42,7 +39,7 @@ ss.client.packAssets() if ss.env is "production"
 # Twitter Auth
 twitterCallback = (session, accessToken, accessTokenSecret, meta) ->
   nick = meta.screen_name.toLowerCase()
-  meta.uuid = UUID.v4()
+  meta.uuid = crypto.randomBytes(3).toString('hex')
 
   session.userId = meta.uuid
   session.subscribed = false
@@ -64,14 +61,24 @@ everyauth.twitter
   .consumerSecret(env.twitter.consumer_secret)
   .handleAuthCallbackError(twitterErrback)
   .findOrCreateUser(twitterCallback)
-  .redirectPath('/home')
+  .redirectPath('/login/success')
 
 ss.http.middleware.prepend ss.http.connect.bodyParser()
 ss.http.middleware.append everyauth.middleware()
 
+ss.http.middleware.append (req, res, next) ->
+  return next() if req.url != '/login/success' 
+
+  res.writeHead(302, 'Location': req.session.redirectTo || '/home')
+  res.end()
+
+# Serve this client on the root URL
+ss.http.route "/", (req, res) ->
+  res.serveClient 'vmux'
+
 # Guest login
 ss.http.route "/auth/guest", (req, res) ->
-  uuid = UUID.v4()
+  uuid = crypto.randomBytes(3).toString('hex')
 
   query = req.url.match(/screen_name=(\w+)/)
   screen_name = if query then query[1] else 'Guest'
@@ -86,22 +93,10 @@ ss.http.route "/auth/guest", (req, res) ->
   redis.setex "user:#{uuid}",   expiry, JSON.stringify(user)
   redis.setex "lookup:#{uuid}", expiry, uuid
 
-  res.writeHead(302, 'Location': '/home')
+  res.writeHead(302, 'Location': '/login/success')
   res.end()
 
-# Start HTTP server
+# Start SocketStream
 server = http.Server(ss.http.middleware)
 server.listen env.port
-
-# Force polling
-#ss.ws.transport.use 'engineio',
-#  client: 
-#    transports: ["polling"]
-#    upgrade: false
-#  server: 
-#    transports: ["polling"]
-#    allowUpgrades: false
-#    pingInterval: 1000
-
-# Start SocketStream
 ss.start server

@@ -25,10 +25,8 @@ class AppRouter extends Backbone.Router
     $('body').html(landing.render().el)
 
   home: ->
-    ss.rpc 'vmux.home', (success, current_user, owner) ->
-      if not success
-        App.navigate('/', trigger: true) 
-        return
+    ss.rpc 'vmux.home', (loggedIn, current_user, owner) ->
+      return App.navigate('/', {trigger: true}) if not loggedIn
 
       user = new User(current_user)
       window.home = new Home(model: user)
@@ -37,14 +35,11 @@ class AppRouter extends Backbone.Router
       warnOnReload()
 
   profile: (profile) ->
-    ss.rpc 'vmux.profile', profile, (success, current_user, profile_data) ->
-      if not success
-        App.navigate('/', {trigger: true}) 
-        return
+    ss.rpc 'vmux.profile', profile, (loggedIn, current_user, profile_data) ->
+      return App.navigate('/', {trigger: true}) if not loggedIn
 
       if current_user.screen_name.toLowerCase() == profile.toLowerCase()
-        App.navigate('/home', {trigger: true}) 
-        return
+        return App.navigate('/home', {trigger: true}) 
 
       user          = new User(current_user)
       profile_user  = new User(profile_data)
@@ -54,7 +49,8 @@ class AppRouter extends Backbone.Router
       warnOnReload()
 
   room: (room_name) ->
-    ss.rpc 'vmux.room', room_name, (current_user) ->
+    ss.rpc 'vmux.room', room_name, (loggedIn, current_user) ->
+      return App.navigate('/', {trigger: true}) if not loggedIn
 
       user = new User(current_user)
       room = new Room(model: user, room_name: room_name)

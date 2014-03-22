@@ -22,11 +22,9 @@
     "uuid": "~1.4.1"
   },
   "scripts": {
-    "start": "coffee app.coffee"
+    "start": "nodemon app.coffee"
   },
-  "subdomain": "vmux",
-  "domains": [
-    "vmux.co",
-    "www.vmux.co"
-  ]
+  "devDependencies": {
+    "nodemon": "^1.0.17"
+  }
 }

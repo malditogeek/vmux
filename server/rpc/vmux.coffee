@@ -42,7 +42,7 @@ exports.actions = (req, res, ss) ->
   room: (room_name) ->
     findUser req.session.userId, (user) ->
       req.session.channel.subscribe room_name
-      res(user)
+      res(true, user)
 
   # State propagation
 

@@ -76,7 +76,7 @@ class Room extends Backbone.View
 
 
     sidebar = new Sidebar(model: @model)
-    @$el.find('#sidebar').html(sidebar.render().el)
+    @$el.find('#navbar').html(sidebar.render().el)
 
     input = new MessageInput(pc: @pc)
     @$el.find('#chat-input').html(input.render().el)

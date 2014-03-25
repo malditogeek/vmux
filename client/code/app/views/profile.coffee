@@ -23,7 +23,7 @@ class Profile extends Backbone.View
     @$el.html(ss.tmpl['layout-profile'].render(@options.profile_user.toJSON()))
 
     sidebar = new Sidebar(model: @model)
-    @$el.find('#sidebar').html(sidebar.render().el)
+    @$el.find('#navbar').html(sidebar.render().el)
 
     ss.event.on 'call.rejected', =>
       @$el.find('.call').text('Busy')

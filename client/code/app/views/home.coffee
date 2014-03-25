@@ -55,7 +55,7 @@ class Home extends Backbone.View
     @$el.html(ss.tmpl['layout-home'].render({user: @model.toJSON()}))
 
     sidebar = new Sidebar(model: @model)
-    @$el.find('#sidebar').html(sidebar.render().el)
+    @$el.find('#navbar').html(sidebar.render().el)
 
     online_users = new Users()
     roster = new Roster(collection: online_users)
@@ -127,7 +127,6 @@ class Home extends Backbone.View
     stream = new Stream(peer, pc)
     one_to_one = new OneToOne(model: stream, localUser: @model)
     @$el.find('#conversation').html(one_to_one.render().el)
-
     @$el.find('#container').fadeOut 200, =>
       @$el.find('#bgvideo').fadeOut(200)
       @$el.find('#conversation').fadeIn(200)

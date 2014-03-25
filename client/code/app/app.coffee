@@ -60,3 +60,4 @@ class AppRouter extends Backbone.Router
 
 window.App = new AppRouter()
 Backbone.history.start(pushState: true)
+window.scrollTo(0,1)

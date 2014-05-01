@@ -5,16 +5,17 @@
   #background
   #container
     #navbar
+    {{#user.guest}}
+    .guest-notice
+      p 
+        |To receive a call, send this link: 
+        a(href="{{host}}/{{user.uuid}}") {{host}}/{{user.uuid}}
+    {{/user.guest}}
     #roster
     #placeholder
-      {{#user.guest}}
-      p To receive a call, send this link:
-      p
-        a(href="https://vmux.co/{{user.uuid}}") https://vmux.co/{{user.uuid}}
-      {{/user.guest}}
-
       {{^user.guest}}
-      p
-        |  None of your friends are online.
+      p None of your friends are online.
       {{/user.guest}}
   #conversation
+
+#notification

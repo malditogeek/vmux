@@ -1,0 +1,20 @@
+#bgvideo
+  video#loopback(autoplay, muted)
+
+#wrapper
+  #background
+  #container
+    #navbar
+    #roster
+    #placeholder
+      {{#user.guest}}
+      p To receive a call, send this link:
+      p
+        a(href="https://vmux.co/{{user.uuid}}") https://vmux.co/{{user.uuid}}
+      {{/user.guest}}
+
+      {{^user.guest}}
+      p
+        |  None of your friends are online.
+      {{/user.guest}}
+  #conversation

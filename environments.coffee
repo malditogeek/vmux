@@ -13,6 +13,10 @@ module.exports =
       host: 'localhost'
       port: 6379
 
+    cookies:
+      domain: '.vmux.co'
+      secure: true
+
   development:
     port: process.env.PORT or 5000
 
@@ -25,3 +29,7 @@ module.exports =
     redis:
       host: 'localhost'
       port: 6379
+
+    cookies:
+      secure: false
+

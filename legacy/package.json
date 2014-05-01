@@ -1,0 +1,30 @@
+{
+  "name": "vmux",
+  "description": "Video calls in your browser.",
+  "version": "0.0.1-9",
+  "author": "Mauro Pompilio <hackers.are.rockstars@gmail.com>",
+  "private": true,
+  "engines": {
+    "node": ">= 0.6.0"
+  },
+  "dependencies": {
+    "socketstream": "0.3.x",
+    "ss-coffee": "0.1.x",
+    "ss-jade": "0.1.x",
+    "ss-stylus": "0.1.x",
+    "ss-hogan": "0.1.x",
+    "ss-console": "0.1.x",
+    "everyauth": "0.4.x",
+    "underscore": "1.5.x",
+    "coffee-script": "1.6.x",
+    "redis": "~0.10.0",
+    "ntwitter": "~0.5.0",
+    "uuid": "~1.4.1"
+  },
+  "scripts": {
+    "start": "nodemon app.coffee"
+  },
+  "devDependencies": {
+    "nodemon": "^1.0.17"
+  }
+}

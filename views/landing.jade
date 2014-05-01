@@ -1,0 +1,75 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    meta(name="mobile-web-app-capable",content="yes")
+    meta(content='Secure peer-to-peer video calls in your browser using WebRTC.', name='description')
+    meta(content='webrtc, p2p, peer-to-peer, videoconference, chat', name='keywords')
+    link(href="/vmux.css", rel="stylesheet")
+    script(src='/site.js', type="text/javascript")
+    title VMUX | Secure P2P text, audio and video chats.
+  body
+    #landing.container
+      .row
+        .col-md-12
+          .logo
+            img(src='/vmux.png')
+      .row
+        .col-md-12
+          .hero
+            h1 Truly private conversations.
+            p Secure peer-to-peer text, audio and video chats in your browser.
+            .login
+              a#twitter-login.btn.btn-primary.btn-lg(href='/auth/twitter') Login with Twitter
+              a#guest-login.btn.btn-primary.btn-lg(href='#') Login as Guest
+            .browsers
+              p Works on Chrome, Chrome for Android, Firefox, Firefox for Android and Opera.
+      .row.features
+        .col-md-3
+          h2 No plugins
+          p 
+            |VMUX uses 
+            a(href='http://www.webrtc.org/') WebRTC
+            |, a state-of-the-art real-time communications framework built into your browser.
+        .col-md-3
+          h2 P2P
+          p Browser to browser communication. Your text, audio and video chats never touch a VMUX server.
+        .col-md-3
+          h2 Secure
+          p 
+            |All content is encrypted end to end using 
+            a(href='https://en.wikipedia.org/wiki/Datagram_Transport_Layer_Security') DTLS 
+            |and 
+            a(href='https://en.wikipedia.org/wiki/Secure_Real-time_Transport_Protocol') SRTP
+            |. WebRTC signaling is encrypted using 
+            a(href='https://otr.cypherpunks.ca/') OTR.
+        .col-md-3
+          h2 Free
+          p 
+            |As in Freedom. VMUX is open source software, you can find the code and file issues on 
+            a(href='https://github.com/malditogeek/vmux') GitHub.
+      .row
+        .col-md-6.col-md-offset-3
+          .warning
+            p VMUX is not a magic bullet. Even though VMUX provides useful encryption, you should never trust any piece of software with your life, and VMUX is no exception. It wont anonymize your connection or protect you against keyloggers or untrustworthy people.
+      .row.author
+        .col-md-12
+          p 
+            a(href='https://twitter.com/malditogeek') Mauro Pompilio 
+            | ~ 2014
+
+  #guest-modal.modal.fade
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button", "data-dismiss"="modal", "aria-hidden"="true") &times;
+          h4 What's your name?
+        .modal-body
+          form(action='/auth/guest', method='GET')
+            p
+              input#username.form-control(type='text', name='name', placeholder='Your name', autofocus='true')
+            button#login-button.btn.btn-success(type='submit') Login
+
+    script(src="/ga.js", type="text/javascript")

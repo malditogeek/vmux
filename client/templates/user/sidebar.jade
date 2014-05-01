@@ -19,28 +19,6 @@
 //    a(href='https://github.com/malditogeek/vmux', target='_blank')
 //      img(src='/vmux.png')
 
-//.navbar.navbar-inverse(role="navigation")
-//  .container-fluid
-//    .navbar-header
-//      button(type="button",class="navbar-toggle", data-toggle="collapse", data-target="#nav-icons")
-//        span.icon-bar
-//        span.icon-bar
-//        span.icon-bar
-//      .navbar-brand.navbar-left.user-details
-//        img.img-circle(src="{{avatar}}")
-//        |  Hi {{name}}!
-//    #nav-icons.collapse.navbar-collapse
-//      ul.nav.navbar-nav.navbar-right
-//        li
-//          a#home(href='#')
-//            img.nav-icon(src='/home.png')
-//        li
-//          a#group(href='#')
-//            img.nav-icon(src='/group.png')
-//        li
-//          a#info(href='#')
-//            img.nav-icon(src='/info.png')
-
 .navbar.navbar-inverse(role="navigation")
   .container-fluid
 
@@ -50,7 +28,7 @@
         span.icon-bar
         span.icon-bar
       .navbar-brand
-        img.img-circle(src="{{avatar}}")
+        img.img-circle(src="{{profile_image_url_https}}")
 
     #nav-icons.collapse.navbar-collapse
       ul.nav.navbar-nav
@@ -60,4 +38,3 @@
           a#group(href='#') JOIN ROOM
         li
           a#info(href='#') ABOUT
-

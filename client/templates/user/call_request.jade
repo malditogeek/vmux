@@ -1,11 +1,13 @@
-#modal.modal.fade
+.call-request.modal.fade
   .modal-dialog
     .modal-content
       .modal-body
         p 
-          img.img-circle(src="{{avatar}}")
-        p Accept call from {{screen_name}}?
+          img.img-circle(src="{{user.profile_image_url_https}}")
+        p Accept {{type}} call from {{user.screen_name}}?
         p
-          button#reject.btn.btn-danger  Decline
-          button#accept.btn.btn-success Accept
+          small Grant access to your {{type}} input first
+        p
+          button.reject.btn.btn-danger.donotdisplay  Decline
+          button.accept.btn.btn-success.donotdisplay Accept
           audio(src='/ringtone.mp3', autoplay, loop)

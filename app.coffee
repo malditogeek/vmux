@@ -1,102 +1,202 @@
-http      = require('http')
-https     = require('https')
-fs        = require('fs')
-ss        = require('socketstream')
-everyauth = require('everyauth')
-UUID      = require('uuid')
-Twitter   = require('ntwitter')
-Redis     = require('redis')
-crypto    = require('crypto')
+express   = require 'express'
+everyauth = require 'everyauth'
+Redis     = require 'redis'
+helmet    = require 'helmet'
+crypto    = require 'crypto'
 
-env       = require('./environments')[ss.env]
+twitterAuth = require './twitter-auth'
+
+env   = require('./environments')[process.env.NODE_ENV || 'development']
 redis = Redis.createClient(env.redis.port, env.redis.host)
-ss.session.store.use 'redis', host: env.redis.host, port: env.redis.port
 
-twitter = new Twitter
-  consumer_key:         env.twitter.consumer_key
-  consumer_secret:      env.twitter.consumer_secret
-  access_token_key:     env.twitter.access_token_key
-  access_token_secret:  env.twitter.access_token_secret
+RedisStore    = require('connect-redis')(express);
+sessionStore  = new RedisStore client: redis
 
-# Define a single-page client
-ss.client.define "vmux",
-  view: "app.jade"
-  css:  ["libs", "app.styl"]
-  code: ["libs", "app"]
-  tmpl: "*"
+redisClientPool = {}
 
-# Code Formatters
-ss.client.formatters.add require("ss-coffee")
-ss.client.formatters.add require("ss-jade")
-ss.client.formatters.add require("ss-stylus")
+# Helper used by the SSE
+findOrCreateRedisPubSub = (uuid, userId) ->
+  client = redisClientPool[uuid]
+  
+  if !client
+    client = Redis.createClient(env.redis.port, env.redis.host)
+    client.smembers "friends:#{uuid}", (err, user_ids) ->
+      client.subscribe "channel:#{id}" for id in user_ids
+    client.subscribe "user:#{userId}"
+    redisClientPool[uuid] = client
+  
+  return client
 
-# Use server-side compiled Hogan (Mustache) templates. Others engines available
-ss.client.templateEngine.use require("ss-hogan")
+cookieSecret = process.env.COOKIE_SECRET || 'correctstaplehorse'
 
-# Minimize and pack assets if you type: SS_ENV=production node app.js
-ss.client.packAssets() if ss.env is "production"
-
-# Twitter Auth
-twitterCallback = (session, accessToken, accessTokenSecret, meta) ->
-  nick = meta.screen_name.toLowerCase()
-  meta.uuid = crypto.randomBytes(3).toString('hex')
-
-  session.userId = meta.uuid
-  session.subscribed = false
-  session.save()
-
-  redis.set "user:#{meta.uuid}", JSON.stringify(meta)
-  redis.set "lookup:#{nick}", meta.uuid
-  twitter.getFriendsIds meta.id, (err, ids) ->
-    redis.sadd "friends:#{meta.uuid}", ids
-
-  true
-
-twitterErrback = (req, res) ->
-  res.writeHead(302, 'Location': '/')
-  res.end()
+app = express()
+app.use helmet.defaults()
+app.set 'view engine', 'jade'
+app.use express.static(__dirname + '/static')
+app.use express.favicon()
+app.use express.json()
+app.use express.urlencoded()
+app.use express.cookieParser(cookieSecret)
+app.use express.session
+  store: sessionStore
+  secret: cookieSecret
+  cookie:
+    path:     '/'
+    httpOnly: true
+    domain:   env.cookies.domain
+    secure:   env.cookies.secure
 
 everyauth.twitter
   .consumerKey(env.twitter.consumer_key)
   .consumerSecret(env.twitter.consumer_secret)
-  .handleAuthCallbackError(twitterErrback)
-  .findOrCreateUser(twitterCallback)
-  .redirectPath('/login/success')
+  .handleAuthCallbackError(twitterAuth.errback)
+  .findOrCreateUser(twitterAuth.callback)
+  .redirectPath('/auth/success')
 
-ss.http.middleware.prepend ss.http.connect.bodyParser()
-ss.http.middleware.append everyauth.middleware()
+app.use everyauth.middleware()
 
-ss.http.middleware.append (req, res, next) ->
-  return next() if req.url != '/login/success' 
+# Helper
+findUserById = (userId, callback) ->
+  redis.get "user:#{userId}", (err, json) ->
+    return callback(err, null) if err
+    user = JSON.parse(json)
+    callback(null, user)
 
-  res.writeHead(302, 'Location': req.session.redirectTo || '/home')
-  res.end()
+# Helper
+findUserByName = (name, callback) ->
+  redis.get "lookup:#{name.toLowerCase()}", (err, uuid) ->
+    return callback(err, null) if err
+    findUserById uuid, callback
 
-# Serve this client on the root URL
-ss.http.route "/", (req, res) ->
-  res.serveClient 'vmux'
+# Everyauth helper, allows to use req.user
+everyauth.everymodule.findUserById (userId, callback) ->
+  findUserById userId, callback
 
-# Guest login
-ss.http.route "/auth/guest", (req, res) ->
-  uuid = crypto.randomBytes(3).toString('hex')
+# Middleware
+authenticate = (req, res, next) ->
+  if req.session.auth then next() else res.send 403
 
-  query = req.url.match(/screen_name=(\w+)/)
-  screen_name = if query then query[1] else 'Guest'
+# Guest/anonymous login
+app.get "/auth/guest", (req, res) ->
+  uuid = crypto.randomBytes(4).toString('hex')
+  screen_name = req.query.name || 'Guest'
 
-  req.session.userId = uuid
-  req.session.subscribed = false
-  req.session.save()
+  user = 
+    id: uuid
+    uuid: uuid
+    screen_name: screen_name
+    profile_image_url_https: '/user.png'
+    guest: true
 
-  user = {id: uuid, uuid: uuid, screen_name: screen_name, guest: true}
+  req.session.auth =
+    loggedIn: true
+    userId: uuid
+    guest:
+      user: user
 
   expiry = 60 * 60 * 24
   redis.setex "user:#{uuid}",   expiry, JSON.stringify(user)
   redis.setex "lookup:#{uuid}", expiry, uuid
 
-  res.writeHead(302, 'Location': '/login/success')
-  res.end()
+  res.redirect '/auth/success'
 
-# Start SocketStream
-server = http.Server(ss.http.middleware)
-server.listen env.port
-ss.start server
+app.get '/auth/success', (req, res) ->
+  if req.session.redirectTo
+    res.redirect req.session.redirectTo
+    delete req.session.redirectTo
+  else
+    res.redirect '/home'
+
+app.get '/', (req, res) ->
+  if req.loggedIn then res.redirect '/home' else res.render 'landing'
+
+app.get '/user/current', authenticate, (req, res) ->
+  res.send req.user
+
+app.get '/user/:name', authenticate, (req, res) ->
+  findUserByName req.params.name, (err, user) ->
+    res.send user
+
+# FIXME will the user always receive this messages no matter in what resource it is?
+# is this good or bad?
+app.post '/otr/:id', authenticate, (req, res) ->
+  console.log '[OTR]', req.params.id
+  msg = {event: 'otr', payload: req.body.payload}
+  redis.publish "user:#{req.params.id}", JSON.stringify(msg)
+  res.send 200
+
+# Online used by the 'online' signal now...
+app.post '/signal/:id', authenticate, (req, res) ->
+  console.log '[signal]', req.body.msg.src.id, '>', req.params.id
+  msg = {event: 'signal', payload: req.body.msg}
+  redis.publish "user:#{req.params.id}", JSON.stringify(msg)
+  res.send 200
+
+# TODO add whitelist of events?
+app.post '/s/:evt/:id', authenticate, (req, res) ->
+  console.log '[s]', req.params.evt, req.params.id
+  msg = {event: req.params.evt, payload: req.body.msg}
+  redis.publish "user:#{req.params.id}", JSON.stringify(msg)
+  res.send 200
+ 
+app.get '/sse/:res', authenticate, (req, res) ->
+  console.log "[SSE] #{req.params.res}"
+
+  req.socket.setTimeout(Infinity);
+  res.writeHead 200, 
+    'Content-Type'  : 'text/event-stream'
+    'Cache-Control' : 'no-cache'
+    'Connection'    : 'keep-alive'
+
+  # Heartbeat
+  nln = -> res.write('\n')
+  nln()
+  hbt = setInterval nln, 15000
+
+  messageHandler = (topic, data) ->
+    msg = JSON.parse(data)
+    res.write "retry: 500\n"
+    res.write "event: #{msg.event}\n"
+    res.write "data: #{JSON.stringify(msg.payload)}\n\n"
+
+  # Get the redis client for this user from the pool
+  r = findOrCreateRedisPubSub(req.user.uuid, req.user.id)
+  r.on 'message', messageHandler
+
+  msg = {event: req.params.res, payload: {type: 'connected', src: req.user}}
+  if req.params.res.match(/profile/)
+    profile_id = req.params.res.split('-')[1]
+    redis.publish "user:#{profile_id}", JSON.stringify(msg)
+  else
+    redis.publish "channel:#{req.user.id}", JSON.stringify(msg)
+
+  # FIXME
+  # if req.params.res == 'room' then r.subscribe "room:#{req.params.id}"
+
+  # Clear heartbeat and listener
+  req.on 'close', =>
+    clearInterval hbt
+    r.unsubscribe "room:#{req.params.id}"
+    r.removeListener 'message', messageHandler
+
+# Backbone path
+app.get '/home', (req, res) ->
+  if req.loggedIn then res.render 'app' else res.redirect '/'
+
+# Backbone path
+app.get '/room/:roomName', (req, res) ->
+  if req.loggedIn
+    res.render 'app'
+  else
+    req.session.redirectTo = "/room/#{req.params.id}"
+    res.redirect '/'
+
+# Backbone path
+app.get '/:profile', (req, res) ->
+  if req.loggedIn
+    res.render 'app'
+  else
+    req.session.redirectTo = req.params.profile
+    res.redirect '/'
+
+app.listen env.port

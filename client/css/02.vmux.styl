@@ -1,0 +1,372 @@
+@font-face 
+  font-family: 'Source Sans Pro'
+  font-style: normal
+  font-weight: 300
+  src: local('Source Sans Pro Light'), local('SourceSansPro-Light'), url('../fonts/source-sans-pro-normal-300.woff') format('woff')
+
+@font-face 
+  font-family: 'Source Sans Pro'
+  font-style: italic
+  font-weight: 300
+  src: local('Source Sans Pro Light Italic'), local('SourceSansPro-LightIt'), url('../fonts/source-sans-pro-italic-300.woff') format('woff')
+
+
+body
+  margin: 0px
+  background: url('/diagmonds.png') repeat #111;
+  color: #CCC
+  font-family: 'Source Sans Pro', sans-serif
+  font-weight: 200
+  font-size: 18px
+  position: relative
+
+html, body 
+  height: 100%
+//  overflow: hidden
+
+a
+  text-decoration: none
+
+a:hover
+  text-decoration: none
+
+.modal
+  color: #666
+  text-align: center
+  overflow-y: hidden
+  .btn
+    margin-right: 10px
+  .img-circle
+    width: 48px
+    height: 48px
+
+#landing
+  text-align: center
+  .hero
+    h1
+      font-size: 44px
+    margin: 150px 0px 50px 0px
+  .login
+    margin: 30px 0px 10px 0px
+
+  .features, .browsers
+    p
+      color: #888
+
+  .browsers
+    font-size: 14px
+
+  .warning
+    margin: 50px 0px 0px 20px
+    color: lightcoral
+    font-size: 14px
+    opacity: 0.7
+
+  .author
+    margin-top: 20px
+    p
+      font-size: 14px
+      color: #888
+
+  .logo
+    background: #11
+    position: fixed
+    top: 0px
+    left: 0px
+    width: 100%;
+    text-align: center
+    z-index: 1000
+    img
+      width: 120px
+      padding: 20px
+
+  .btn
+    margin: 5px 10px
+
+
+#room
+  height: 100%
+
+  #streams
+    position: relative
+    z-index: 0
+    float: right
+    width: 60%
+    height: 100%
+
+    .local
+      -webkit-transform: rotateY(-180deg)
+      transform: rotateY(-180deg)
+
+    .stream-view
+      width: 50%
+      float: left
+
+      video
+        width: 100%
+        z-index: 1
+
+      .screen_name
+        text-shadow: #000 0px 0px 2px
+        position: absolute
+        font-size: 16px
+        margin: -45px 0px 0px 5px
+        opacity: 0.7
+        border-radius: 15px
+        .avatar
+          width: 32px
+          height: 32px
+          margin-right: 5px
+
+      #controls
+        z-index: 2
+        position: absolute
+        font-size: 18px
+        margin: -50px 0px 0px 10px
+        padding: 4px 8px
+        background: #555
+        border-radius: 50px
+
+        i
+          cursor: pointer
+          color: lightgreen
+          padding: 0px 10px
+
+        .muted
+          color: lightcoral
+
+  input[type='text']
+    background: transparent
+    color: white
+
+  #chat
+    position: relative
+    width: 40%
+    float: left
+    height: 100%
+
+    #chat-messages-container
+      position: relative
+      padding: 80px 20px 75px 20px
+      height: 100%
+      width: 100%
+      overflow: hidden
+
+    #chat-messages
+      overflow: scroll
+      height: 100%
+      width: 100%
+
+      ul
+        padding: 0px
+        list-style: none
+
+      .chat-message
+        margin: 0px 0px 10px 0px
+        .avatar
+          width: 32px
+          height: 32px
+        span
+          margin: 0px 10px
+        
+
+    #chat-input
+      position: absolute
+      bottom: 10px
+      left: 20px
+      padding: 0px 10px 0px 0px
+
+#home, #profile
+  position: relative
+  min-width: 100%
+  min-height: 100%
+  width: 100%
+  height: 100%
+
+  .call
+    display: none
+
+  #placeholder
+    text-align: center
+    margin-top: 50px
+
+#bgvideo
+  position: absolute
+  z-index: 1
+  top: 0
+  left: 0
+  overflow: hidden
+  width: 100%
+
+  video
+    object-fit: contain
+    width: 100%
+    -webkit-transform: rotateY(-180deg)
+    //-webkit-filter:blur(5px)
+    transform: rotateY(-180deg)
+    //filter: blur(5px)
+
+#wrapper
+  position: absolute
+  z-index: 20
+  width: 100%
+  height: 100%
+  top: 0
+  left: 0
+  overflow: hidden
+
+#background 
+  z-index: 0
+  position: absolute
+  width: 100%
+  height: 100%
+  top: 0
+  left: 0
+  //background: #000
+  //opacity: 0.6
+
+
+#container
+  position: relative
+  width: 100%
+  height: 100%
+  padding-top: 100px
+
+#conversation
+  display: none
+
+.user
+  text-align: center
+  width: 150px
+  float: left
+  padding: 10px
+  .actions
+    display: none
+    .active
+      color: lightcoral
+    font-size: 20px
+    i
+      margin: 0px 5px
+      cursor: pointer
+    .unreadCount
+      display: none
+      font-size: 16px
+      color: lightcoral
+  .chat-messages
+    text-align: left
+    max-height: 200px
+    overflow: scroll
+    ul
+      padding: 0px
+      list-style: none
+    .chat-message
+      .avatar
+        margin: 5px 10px
+        height: 24px
+        width: 24px
+
+
+#singleuser
+  margin-top: 100px
+  width: 100%
+  .user
+    float: none
+    margin: 0 auto
+
+@media(max-width: 768px)
+  #one-to-one
+    #local
+      bottom: 5px !important
+      right: 5px !important
+      max-width: 100px
+      max-height: 100px
+    #controls
+      top: 5px !important
+      right: 5px !important
+      font-size: 15px !important
+    #chat-input, #chat-messages
+      display: none
+
+#one-to-one
+  #remote
+    z-index: 1
+    position: absolute
+    width: 100%
+
+  #local
+    z-index: 2
+    position: fixed
+    bottom: 30px
+    right: 30px
+    max-width: 200px
+    border: 2px solid #FFF
+    border-radius: 2px
+    -webkit-transform: rotateY(-180deg)
+    transform: rotateY(-180deg)
+
+  #controls
+    z-index: 3
+    position: absolute
+    font-size: 18px
+    top: 30px
+    right: 30px
+    padding: 7px 15px
+    background: #555
+    border-radius: 50px
+
+    #hangup
+      color: lightcoral
+      margin-left: 15px 
+
+    i
+      cursor: pointer
+      color: lightgreen
+      padding: 0px 10px
+
+    #toggle-fullscreen
+      color: lightblue
+
+    .muted
+      color: lightcoral
+
+
+.clear
+  clear: both
+
+#navbar
+  position: fixed
+  top: 0px
+  width: 100%
+  z-index: 99
+
+.navbar-inverse
+  background: transparent
+  border-color: transparent
+  .navbar-text, .navbar-brand
+    color: #FFF
+  .navbar-collapse
+    border-color: transparent
+    box-shadow: none
+
+.navbar
+  .user-details
+    font-size: 1.2em
+    font-style: italic
+    img
+      width: 28px
+      height: 28px
+  .nav-icon
+    width: 32px
+
+
+@media (min-width: 768px)
+  .nav
+    li
+      a
+        padding: 25px 15px
+
+.donotdisplay
+  display: none
+
+.guest-notice
+  text-align: center

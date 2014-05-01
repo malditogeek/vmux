@@ -1,0 +1,11 @@
+#modal.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-body
+        p 
+          img.img-circle(src="{{avatar}}")
+        p Accept call from {{screen_name}}?
+        p
+          button#reject.btn.btn-danger  Decline
+          button#accept.btn.btn-success Accept
+          audio(src='/ringtone.mp3', autoplay, loop)

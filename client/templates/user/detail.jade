@@ -1,6 +1,28 @@
+img.img-circle(src="{{profile_image_url_https}}")
+
 p
-  img.img-circle(src="{{avatar}}")
-p
-  small {{name}}
-p
-  button.call.btn.btn-info Call
+  small {{screen_name}}
+
+p.actions
+  i.show-chat.fa.fa-comment.tip(data-toggle="tooltip", data-placement="bottom", title="Chat")
+  span.unreadCount
+  i.audiocall.fa.fa-phone.tip(data-toggle="tooltip", data-placement="bottom", title="Audiocall")
+  i.videocall.fa.fa-video-camera.tip(data-toggle="tooltip", data-placement="bottom", title="Videocall")
+
+.chat.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close.hide-chat(type="button") &times;
+        span Chat with {{screen_name}}
+      .modal-body
+        .chat-messages
+        .chat-input
+
+.audio.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        span Audio call with {{screen_name}}
+      .modal-body
+        .one-to-one-audio

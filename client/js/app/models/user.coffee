@@ -43,17 +43,15 @@ class User extends Backbone.Model
         when 'offer'
           pc = @newConnection msg.connType, msg.uuid, true
           pc.processOffer(msg.signal)
-          if msg.connType == 'video'
-            @renderStream(msg.src.id, pc)
         when 'answer'
           pc = @conns[msg.uuid]
-          pc.processAnswer(msg.signal)
+          pc.processAnswer(msg.signal) if pc
         when 'candidate'
           pc = @conns[msg.uuid]
-          pc.addCandidate(msg.signal)
+          pc.addCandidate(msg.signal) if pc
         when 'bye'
           pc = @conns[msg.uuid]
-          pc.close()
+          pc.close() if pc
 
     @otr.on 'status', (state) =>
       switch state
@@ -88,7 +86,7 @@ class User extends Backbone.Model
 
   # WebRTC signaling is done using OTR
   signal: (msg) ->
-    console.debug '[sig out]', msg.uuid
+    console.debug '[sig out]', msg.uuid, msg.signal.type
     msg.src = @options.parent.toJSON()
     @otr.sendMsg JSON.stringify(msg)
 

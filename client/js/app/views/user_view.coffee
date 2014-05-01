@@ -104,6 +104,7 @@ class UserDetail extends Backbone.View
         $('#conversation').fadeIn(200)
 
     @model.on 'video:disconnected', =>
+      @$el.find('.videocall').removeClass('active')
       @one_to_one.remove()
       $('#conversation').fadeOut 200, =>
         $('#container').fadeIn 200, =>
@@ -115,6 +116,7 @@ class UserDetail extends Backbone.View
       @$el.find('.audio').modal(backdrop: false, keyboard: false)
 
     @model.on 'audio:disconnected', =>
+      @$el.find('.audiocall').removeClass('active')
       @$el.find('.audio').modal('hide')
       @$el.find('.audio').on 'hidden.bs.modal', =>
         @onetooneaudio.remove()

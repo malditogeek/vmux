@@ -28,36 +28,51 @@ var envs = {
 
 var env = envs[process.env.NODE_ENV || 'development'];
 
-gulp.task('js', function() {
-  var b = browserify(paths.app)
-  b.require('./client/js/app/vendor/jquery-2.1.0.js', {expose: 'jquery'})
-  b.require('./client/js/app/vendor/hogan-3.0.0.js',  {expose: 'hogan'})
-  b.require('./client/js/app/vendor/backbone.js',     {expose: 'backbone'})
-  b.transform('coffeeify')
-  if (!process.env.DEBUG) b.transform('uglifyify');
-  b.bundle({}, function(err, src) {
+gulp.task('js', function(cb) {
+  var b = browserify(paths.app);
+  var bundle_opts = {debug: true};
+  b.require('./client/js/app/vendor/jquery-2.1.0.js', {expose: 'jquery'});
+  b.require('./client/js/app/vendor/hogan-3.0.0.js',  {expose: 'hogan'});
+  b.require('./client/js/app/vendor/backbone.js',     {expose: 'backbone'});
+  b.transform('coffeeify');
+
+  if (env.name === 'production') {
+    bundle_opts.debug = false;
+    b.transform('uglifyify');
+  }
+
+  b.bundle(bundle_opts, function(err, src) {
     if (err) {
-      console.log('[browserify][err]', err);
-    } else {
-      var output = 'window.ENV=' + JSON.stringify(env) + '\n' + src;
-      fs.writeFile('./static/vmux.js', output);
-      console.log('[browserify][vmux.js done]');
+      console.log(err);
+      return cb(err);
     }
+
+    var output = 'window.ENV=' + JSON.stringify(env) + '\n' + src;
+    fs.writeFile('./static/vmux.js', output, function(err) {
+      cb(err);
+    });
   });
 });
 
-gulp.task('site.js', function() {
-  var b = browserify(paths.site)
+gulp.task('site.js', function(cb) {
+  var b = browserify(paths.site);
+  var bundle_opts = {};
   b.require('./client/js/app/vendor/jquery-2.1.0.js', {expose: 'jquery'})
   b.transform('coffeeify')
-  if (!process.env.DEBUG) b.transform('uglifyify');
-  b.bundle({}, function(err, src) {
+
+  if (env.name === 'production') {
+    bundle_opts.debug = false;
+    b.transform('uglifyify');
+  }
+
+  b.bundle(bundle_opts, function(err, src) {
     if (err) {
-      console.log('[browserify][err]', err);
-    } else {
-      fs.writeFile('./static/site.js', src);
-      console.log('[browserify][site.js done]');
+      console.log(err);
+      return cb(err);
     }
+    fs.writeFile('./static/site.js', src, function() {
+      cb(err);
+    });
   });
 });
 

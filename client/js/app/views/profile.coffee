@@ -29,11 +29,10 @@ class Profile extends Backbone.View
     @$el.find('#navbar').html(sidebar.render().el)
 
     @sse.on 'otr', (msg) =>
-      console.debug '[OTR]', msg
       @profile_user.otr.receiveMsg(msg.body)
 
-    @sse.on 'signal', (msg) =>
-      console.debug "[IN] #{msg.type}"
+    window.beforeunload.push =>
+      @profile_user.disconnect()
 
     return this
 

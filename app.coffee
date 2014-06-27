@@ -195,7 +195,7 @@ app.get '/room/:roomName', (req, res) ->
   if req.loggedIn
     res.render 'app'
   else
-    req.session.redirectTo = "/room/#{req.params.id}"
+    req.session.redirectTo = "/room/#{req.params.roomName}"
     res.redirect '/'
 
 # Backbone path

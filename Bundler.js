@@ -257,6 +257,7 @@ Bundler.prototype.packSite = function() {
               extensions: ['', '.web.coffee', '.web.js', '.coffee', '.js'],
               modulesDirectories: ['node_modules']
           },
+          plugins: [],
           bail: true
     };
 

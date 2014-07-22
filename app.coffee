@@ -100,6 +100,10 @@ app.get "/auth/guest", (req, res) ->
 
   res.redirect '/auth/success'
 
+app.get '/logout', (req, res) ->
+  req.session.destroy()
+  res.redirect '/'
+
 app.get '/auth/success', (req, res) ->
   if req.session.redirectTo
     res.redirect req.session.redirectTo
@@ -164,19 +168,22 @@ app.get '/sse/:res', authenticate, (req, res) ->
   r.on 'message', messageHandler
 
   msg = {event: req.params.res, payload: {type: 'connected', src: req.user}}
-  if req.params.res.match(/profile/)
-    profile_id = req.params.res.split('-')[1]
-    redis.publish "user:#{profile_id}", JSON.stringify(msg)
-  else
-    redis.publish "channel:#{req.user.id}", JSON.stringify(msg)
 
-  # FIXME
-  # if req.params.res == 'room' then r.subscribe "room:#{req.params.id}"
+  [x, rid] = req.params.res.split('-')
+
+  switch x
+    when 'profile'
+      redis.publish "user:#{rid}", JSON.stringify(msg)
+    when 'room'
+      redis.publish "room:#{rid}", JSON.stringify(msg)
+      r.subscribe "room:#{rid}"
+    when 'home'
+      redis.publish "channel:#{req.user.id}", JSON.stringify(msg)
 
   # Clear heartbeat and listener
   req.on 'close', =>
     clearInterval hbt
-    r.unsubscribe "room:#{req.params.id}"
+    r.unsubscribe "room:#{rid}"
     r.removeListener 'message', messageHandler
 
 # Backbone path
@@ -188,7 +195,7 @@ app.get '/room/:roomName', (req, res) ->
   if req.loggedIn
     res.render 'app'
   else
-    req.session.redirectTo = "/room/#{req.params.id}"
+    req.session.redirectTo = "/room/#{req.params.roomName}"
     res.redirect '/'
 
 # Backbone path

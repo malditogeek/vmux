@@ -120,7 +120,10 @@ class UserDetail extends Backbone.View
       @$el.find('.audio').modal('hide')
       @$el.find('.audio').on 'hidden.bs.modal', =>
         @onetooneaudio.remove()
-   
+  
+    @model.on 'data:disconnected', =>
+      @$el.find('.actions').fadeOut()
+
     @model.on 'data:ready', =>
       @$el.find('.actions').fadeIn()
 

@@ -11,6 +11,6 @@ class Message extends Backbone.Model
     extract_options = {extractUrlsWithoutProtocol: true}
     autolink_opts = {targetBlank: true}
     entities = twttr.extractEntitiesWithIndices(escaped_msg, extract_options)
-    @set 'message', twttr.autoLinkEntities(escaped_msg, entities, autolink_opts);
+    @set 'message', twttr.autoLinkEntities(escaped_msg, entities, autolink_opts)
 
 module.exports = Message

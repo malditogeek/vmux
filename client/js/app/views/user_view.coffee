@@ -62,7 +62,7 @@ class UserDetail extends Backbone.View
 
 
   scrollChat: ->
-    @$el.find('.chat-messages').scrollTop(10000);
+    @$el.find('.chat-messages').scrollTop(10000)
 
   incrementUnreadCount: ->
     @unreadCount += 1

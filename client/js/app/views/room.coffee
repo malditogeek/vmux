@@ -72,7 +72,7 @@ class Room extends Backbone.View
     @sse = new ServerSentEvents("room-#{@room_name}")
 
   scrollChat: ->
-    @$el.find('#chat-messages').scrollTop(10000);
+    @$el.find('#chat-messages').scrollTop(10000)
 
   render: ->
     @$el.html(Templates['layout/room'].render())

@@ -35,26 +35,19 @@ class GenericPC
     cb(@pc) if cb
 
   initiate: () ->
-    @pc.createOffer (sdp) =>
+    @pc.createOffer ((sdp) =>
       @pc.setLocalDescription sdp
-      @sendSignal sdp
-    ,
-    (err) => 
-      @log "Error creating offer: ", err
-    , @sdpConstraints
-  
+      @sendSignal sdp), ((err) =>
+      @log "Error creating offer: ", err), @sdpConstraints
 
   processOffer: (msg) ->
     @log "Processing offer", msg
 
     @pc.setRemoteDescription new adapter.RTCSessionDescription(msg)
-    @pc.createAnswer (sdp) =>
+    @pc.createAnswer ((sdp) =>
       @pc.setLocalDescription sdp
-      @sendSignal sdp
-    ,
-    (err) => 
-      @log "Error creating answer", err
-    , @sdpConstraints
+      @sendSignal sdp), ((err) =>
+      @log "Error creating answer", err), @sdpConstraints
 
   processAnswer: (msg) ->
     @log "Processing answer"

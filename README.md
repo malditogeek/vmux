@@ -1,6 +1,7 @@
 ![VMUX](http://i.imgur.com/ykMRrTV.png)
 
 ## Secure P2P text, audio and video chats in your browser using WebRTC
+[![Gitter](http://localhost:4000/Join Chat.svg)](http://localhost:5000/malditogeek/vmux?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 VMUX is a Skype/Hangouts alternative that runs in the browser. It's built on top of WebRTC so you don't need to install any plugins or use Flash. You can do one-to-one or multi-party video calls and all the communications are P2P and encrypted.
 

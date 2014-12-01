@@ -24,6 +24,9 @@ If you already have a working Node/NPM environment, should be as easy as:
     gulp
     npm start
 
+( if `gulp` is not installed globally, do `npm i -g gulp` in a terminal. 
+Use `sudo` in front of it if you get the EACCESS error. [See here](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md#getting-started) for more help )
+
 Point your browser to [localhost:5000](http://localhost:5000/)
 
 ## Deployment

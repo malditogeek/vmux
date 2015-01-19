@@ -8,6 +8,8 @@ You can use it at [https://vmux.co](https://vmux.co)
 
 Have any questions? Join the conversation at [![Gitter](https://badges.gitter.im/malditogeek/vmux.png)](https://gitter.im/malditogeek/vmux)
 
+There is also a talk about VMUX from FutureJS here: <https://www.youtube.com/watch?v=T6iaHbrxKKQ>
+
 ## Browser support
 
 VMUX works on the lastest stable versions of Chrome, Chrome for Android, Firefox, Firefox for Android and Opera.
